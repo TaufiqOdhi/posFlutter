@@ -1,3 +1,4 @@
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/produk.dart';
 
@@ -29,6 +30,11 @@ class EntryFormState extends State<EntryForm> {
   TextEditingController hargaJualController = TextEditingController();
   TextEditingController stokKritisProdukController = TextEditingController();
   TextEditingController stokProdukController = TextEditingController();
+
+  Future _barcScan() async {
+      var result = await BarcodeScanner.scan();
+      kodeProdukController.text = result.rawContent;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +86,9 @@ class EntryFormState extends State<EntryForm> {
                       'Scan Barcode',
                       textScaleFactor: 1.0,
                     ),
-                    onPressed: () {}),
+                    onPressed: () {
+                      _barcScan();
+                    }),
               ),
             ],
           ),
