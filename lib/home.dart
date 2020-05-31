@@ -100,12 +100,18 @@ class _HomeState extends State<Home> {
                 actions: <Widget>[
                   new GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
-                    child: Text("Tidak"),
+                    child: Text(
+                      "Tidak",
+                      style: TextStyle(color: Theme.of(context).primaryColorDark),
+                    ),
                   ),
                   SizedBox(height: 16),
                   new GestureDetector(
                     onTap: () => deleteProduk(produk),
-                    child: Text("Ya"),
+                    child: Text(
+                      "Ya",
+                      style: TextStyle(color: Theme.of(context).primaryColorDark),
+                    ),
                   )
                 ],
               )

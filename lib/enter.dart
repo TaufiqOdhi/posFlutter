@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos/produk.dart';
 
-class EntryForm extends StatefulWidget{
+class EntryForm extends StatefulWidget {
   final Produk produk;
 
   EntryForm(this.produk);
@@ -10,7 +10,7 @@ class EntryForm extends StatefulWidget{
   EntryFormState createState() => EntryFormState(this.produk);
 }
 
-class EntryFormState extends State<EntryForm>{
+class EntryFormState extends State<EntryForm> {
   Produk produk;
   bool _error = false;
   bool _errorKode = false;
@@ -31,8 +31,8 @@ class EntryFormState extends State<EntryForm>{
   TextEditingController stokProdukController = TextEditingController();
 
   @override
-  Widget build(BuildContext context){
-    if(produk != null){
+  Widget build(BuildContext context) {
+    if (produk != null) {
       kodeProdukController.text = produk.kodeProduk;
       namaProdukController.text = produk.namaProduk;
       gambarProdukController.text = produk.gambarProduk;
@@ -47,185 +47,277 @@ class EntryFormState extends State<EntryForm>{
         title: produk == null ? Text('Tambah') : Text('Rubah'),
         leading: new IconButton(
           icon: new Icon(Icons.keyboard_arrow_left),
-            onPressed: () {
-              Navigator.of(context).pop(produk);
-            },
-          ),
+          onPressed: () {
+            Navigator.of(context).pop(produk);
+          },
+        ),
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 15.0, left:10.0, right:10.0),
-        child: ListView(
-          children: <Widget> [
-            Padding(//kode produk
-              padding: EdgeInsets.only(top:20.0, bottom:10.0),
-              child: TextField(
-                controller: kodeProdukController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'kode Produk',
-                  errorText: _errorKode ? 'Kode Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+        padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+        child: ListView(children: <Widget>[
+          Padding(
+            //kode produk
+            padding: EdgeInsets.only(top: 20.0),
+            child: TextField(
+              controller: kodeProdukController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'kode Produk',
+                errorText: _errorKode ? 'Tidak boleh kosong !' : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(//nama produk
-              padding: EdgeInsets.only(top:20.0, bottom:10.0),
-              child: TextField(
-                controller: namaProdukController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Nama Produk',
-                  errorText: _errorNama ? 'Nama Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    child: Text(
+                      'Scan Barcode',
+                      textScaleFactor: 1.0,
+                    ),
+                    onPressed: () {}),
+              ),
+            ],
+          ),
+          Padding(
+            //nama produk
+            padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+            child: TextField(
+              controller: namaProdukController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'Nama Produk',
+                errorText: _errorNama ? 'Tidak boleh kosong !' : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(//gambar produk
-              padding: EdgeInsets.only(top:20.0, bottom:10.0),
-              child: TextField(
-                controller: gambarProdukController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Gambar Produk',
-                  errorText: _errorGambar ? 'Gambar Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+          ),
+          Padding(
+            //gambar produk
+            padding: EdgeInsets.only(top: 20.0),
+            child: TextField(
+              controller: gambarProdukController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'Gambar Produk',
+                errorText: _errorGambar ? 'Tidak boleh kosong !' : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(//harga beli produk
-              padding: EdgeInsets.only(top:20.0, bottom:10.0),
-              child: TextField(
-                controller: hargaBeliProdukController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Harga Beli Produk',
-                  errorText: _errorHargaBeli ? 'Beli Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    child: Text(
+                      'Pilih Gambar',
+                      textScaleFactor: 1.0,
+                    ),
+                    onPressed: () {}),
+              ),
+            ],
+          ),
+          Padding(
+            //harga beli produk
+            padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+            child: TextField(
+              controller: hargaBeliProdukController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Harga Beli Produk',
+                errorText: _errorHargaBeli
+                    ? 'Tidak boleh kosong dan harus angka !'
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(//harga jual produk
-              padding: EdgeInsets.only(top:20.0, bottom:20.0),
-              child: TextField(
-                controller: hargaJualController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Harga Jual Produk',
-                  errorText: _errorHargaJual ? 'Jual Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+          ),
+          Padding(
+            //harga jual produk
+            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            child: TextField(
+              controller: hargaJualController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Harga Jual Produk',
+                errorText: _errorHargaJual
+                    ? 'Tidak boleh kosong dan harus angka !'
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(//stok produk
-              padding: EdgeInsets.only(top:20.0, bottom:10.0),
-              child: TextField(
-                controller: stokProdukController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'stok Produk',
-                  errorText: _errorStok ? 'Stok Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+          ),
+          Padding(
+            //stok produk
+            padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+            child: TextField(
+              controller: stokProdukController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'stok Produk',
+                errorText:
+                    _errorStok ? 'Tidak boleh kosong dan harus angka !' : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(//stok kritis produk
-              padding: EdgeInsets.only(top:20.0, bottom:10.0),
-              child: TextField(
-                controller: stokKritisProdukController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Stok Kritis Produk',
-                  errorText: _errorStokKritis ? 'Kritis Tidak boleh kosong !' : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
+          ),
+          Padding(
+            //stok kritis produk
+            padding: EdgeInsets.only(top: 20.0, bottom: 10.0),
+            child: TextField(
+              controller: stokKritisProdukController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Stok Kritis Produk',
+                errorText: _errorStokKritis
+                    ? 'Tidak boleh kosong dan harus angka !'
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top:20.0, bottom:20.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: RaisedButton(
-                      color: Theme.of(context).primaryColorDark,
-                      textColor: Theme.of(context).primaryColorLight,
-                      child: Text(
-                        'Save',
-                        textScaleFactor: 1.5,
-                      ),
-                      onPressed: (){
-                        setState(() {
-                          kodeProdukController.text.isEmpty ? _errorKode = true : _errorKode = false;
-                          namaProdukController.text.isEmpty ? _errorNama = true : _errorNama = false;
-                          gambarProdukController.text.isEmpty ? _errorGambar = true : _errorGambar = false;
-                          hargaBeliProdukController.text.isEmpty ? _errorHargaBeli = true : _errorHargaBeli = false;
-                          hargaJualController.text.isEmpty ? _errorHargaJual = true : _errorHargaJual = false;
-                          stokProdukController.text.isEmpty ? _errorStok = true : _errorStok = false;
-                          stokKritisProdukController.text.isEmpty ? _errorStokKritis = true : _errorStokKritis = false;
-                          
-                          !_errorKode ? !_errorNama ? !_errorGambar ? !_errorHargaBeli ? !_errorHargaJual ? !_errorStok ? 
-                          !_errorStokKritis ? _error = false : _error = true
-                          : _error = true: _error = true: _error = true: _error = true: _error = true: _error = true;
-                        });
-                        if(!_error){
-                          if(produk == null){
-                            produk = Produk(
-                            kodeProdukController.text,
-                            namaProdukController.text,
-                            gambarProdukController.text,
-                            int.parse(hargaBeliProdukController.text),
-                            int.parse(hargaJualController.text),
-                            int.parse(stokKritisProdukController.text),
-                            int.parse(stokProdukController.text)
-                          );
-                          }else{
-                            produk.kodeProduk = kodeProdukController.text;
-                            produk.gambarProduk = gambarProdukController.text;
-                            produk.namaProduk = namaProdukController.text;
-                            produk.hargaBeliProduk = int.parse(hargaBeliProdukController.text);
-                            produk.hargaJualProduk = int.parse(hargaJualController.text);
-                            produk.stokKritisProduk = int.parse(stokKritisProdukController.text);
-                            produk.stokProduk = int.parse(stokProdukController.text);
-                          }
-                          Navigator.pop(context, produk);
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    child: Text(
+                      'Save',
+                      textScaleFactor: 1.5,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        kodeProdukController.text.isEmpty
+                            ? _errorKode = true
+                            : _errorKode = false;
+                        namaProdukController.text.isEmpty
+                            ? _errorNama = true
+                            : _errorNama = false;
+                        gambarProdukController.text.isEmpty
+                            ? _errorGambar = true
+                            : _errorGambar = false;
+                        int.tryParse(hargaBeliProdukController.text) == null
+                            ? _errorHargaBeli = true
+                            : _errorHargaBeli = false;
+                        int.tryParse(hargaJualController.text) == null
+                            ? _errorHargaJual = true
+                            : _errorHargaJual = false;
+                        int.tryParse(stokProdukController.text) == null
+                            ? _errorStok = true
+                            : _errorStok = false;
+                        int.tryParse(stokKritisProdukController.text) == null
+                            ? _errorStokKritis = true
+                            : _errorStokKritis = false;
+
+                        !_errorKode
+                            ? !_errorNama
+                                ? !_errorGambar
+                                    ? !_errorHargaBeli
+                                        ? !_errorHargaJual
+                                            ? !_errorStok
+                                                ? !_errorStokKritis
+                                                    ? _error = false
+                                                    : _error = true
+                                                : _error = true
+                                            : _error = true
+                                        : _error = true
+                                    : _error = true
+                                : _error = true
+                            : _error = true;
+                      });
+                      if (!_error) {
+                        if (produk == null) {
+                          produk = Produk(
+                              kodeProdukController.text,
+                              namaProdukController.text,
+                              gambarProdukController.text,
+                              int.parse(hargaBeliProdukController.text),
+                              int.parse(hargaJualController.text),
+                              int.parse(stokKritisProdukController.text),
+                              int.parse(stokProdukController.text));
+                        } else {
+                          produk.kodeProduk = kodeProdukController.text;
+                          produk.gambarProduk = gambarProdukController.text;
+                          produk.namaProduk = namaProdukController.text;
+                          produk.hargaBeliProduk =
+                              int.parse(hargaBeliProdukController.text);
+                          produk.hargaJualProduk =
+                              int.parse(hargaJualController.text);
+                          produk.stokKritisProduk =
+                              int.parse(stokKritisProdukController.text);
+                          produk.stokProduk =
+                              int.parse(stokProdukController.text);
                         }
-                      },
-                    ),
+                        Navigator.pop(context, produk);
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (context) => new AlertDialog(
+                                  title: new Text(
+                                    'Tidak bisa disimpan !',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  content: new Text(
+                                      'Coba cek kembali form yang diisi.'),
+                                  actions: <Widget>[
+                                    new GestureDetector(
+                                      onTap: () => Navigator.of(context).pop(),
+                                      child: Text(
+                                        "Kembali",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .primaryColorDark),
+                                      ),
+                                    ),
+                                  ],
+                                ));
+                      }
+                    },
                   ),
-                  Container(width: 5.0,),
-                  Expanded(
-                    child: RaisedButton(
-                      color: Theme.of(context).primaryColorDark,
-                      textColor: Theme.of(context).primaryColorLight,
-                      child: Text(
-                        'Cancel',
-                        textScaleFactor: 1.5,
-                      ),
-                      onPressed: (){
-                        Navigator.pop(context);
-                      },
+                ),
+                Container(
+                  width: 5.0,
+                ),
+                Expanded(
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    child: Text(
+                      'Cancel',
+                      textScaleFactor: 1.5,
                     ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ]
-        ),
+          ),
+        ]),
       ),
     );
   }
-
 }
