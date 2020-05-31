@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
 
   Future<Produk> navigateToEntryForm(
       BuildContext context, Produk produk) async {
-    var result = await Navigator.push(context,
+        var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
       return EntryForm(produk);
     }));
@@ -86,17 +86,41 @@ class _HomeState extends State<Home> {
           child: Icon(Icons.people),
         ),
         title: Text(produk.namaProduk),
-        subtitle: Text('Harga: '+produk.hargaJualProduk.toString()),
+        subtitle: Text('Harga: Rp. '+produk.hargaJualProduk.toString()+
+          '\nStok: '+produk.stokProduk.toString()
+        ),
         trailing: GestureDetector(
           child: Icon(Icons.delete),
           onTap: () async {
-            int result = await dbHelper.delete(produk);
-            if (result > 0) {
-              updateListView();
-            }
+            showDialog(
+              context: context,
+              builder: (context) => new AlertDialog(
+                title: new Text('Apakah anda yakin ?'),
+                content: new Text('Menghapus produk'),
+                actions: <Widget>[
+                  new GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Text("Tidak"),
+                  ),
+                  SizedBox(height: 16),
+                  new GestureDetector(
+                    onTap: () => deleteProduk(produk),
+                    child: Text("Ya"),
+                  )
+                ],
+              )
+            );
           },
         ),
       ),
     );
+  }
+
+  void deleteProduk(Produk produk) async {
+    int result = await dbHelper.delete(produk);
+    if (result > 0) {
+      updateListView();
+    }
+    Navigator.of(context).pop();
   }
 }

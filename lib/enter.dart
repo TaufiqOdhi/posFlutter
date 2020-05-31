@@ -12,7 +12,14 @@ class EntryForm extends StatefulWidget{
 
 class EntryFormState extends State<EntryForm>{
   Produk produk;
-
+  bool _error = false;
+  bool _errorKode = false;
+  bool _errorNama = false;
+  bool _errorGambar = false;
+  bool _errorHargaJual = false;
+  bool _errorHargaBeli = false;
+  bool _errorStok = false;
+  bool _errorStokKritis = false;
   EntryFormState(this.produk);
 
   TextEditingController kodeProdukController = TextEditingController();
@@ -56,6 +63,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: 'kode Produk',
+                  errorText: _errorKode ? 'Kode Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -69,6 +77,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: 'Nama Produk',
+                  errorText: _errorNama ? 'Nama Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -82,6 +91,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: 'Gambar Produk',
+                  errorText: _errorGambar ? 'Gambar Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -95,6 +105,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Harga Beli Produk',
+                  errorText: _errorHargaBeli ? 'Beli Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -108,6 +119,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Harga Jual Produk',
+                  errorText: _errorHargaJual ? 'Jual Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -121,6 +133,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'stok Produk',
+                  errorText: _errorStok ? 'Stok Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -134,6 +147,7 @@ class EntryFormState extends State<EntryForm>{
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Stok Kritis Produk',
+                  errorText: _errorStokKritis ? 'Kritis Tidak boleh kosong !' : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -153,8 +167,22 @@ class EntryFormState extends State<EntryForm>{
                         textScaleFactor: 1.5,
                       ),
                       onPressed: (){
-                        if(produk == null){
-                          produk = Produk(
+                        setState(() {
+                          kodeProdukController.text.isEmpty ? _errorKode = true : _errorKode = false;
+                          namaProdukController.text.isEmpty ? _errorNama = true : _errorNama = false;
+                          gambarProdukController.text.isEmpty ? _errorGambar = true : _errorGambar = false;
+                          hargaBeliProdukController.text.isEmpty ? _errorHargaBeli = true : _errorHargaBeli = false;
+                          hargaJualController.text.isEmpty ? _errorHargaJual = true : _errorHargaJual = false;
+                          stokProdukController.text.isEmpty ? _errorStok = true : _errorStok = false;
+                          stokKritisProdukController.text.isEmpty ? _errorStokKritis = true : _errorStokKritis = false;
+                          
+                          !_errorKode ? !_errorNama ? !_errorGambar ? !_errorHargaBeli ? !_errorHargaJual ? !_errorStok ? 
+                          !_errorStokKritis ? _error = false : _error = true
+                          : _error = true: _error = true: _error = true: _error = true: _error = true: _error = true;
+                        });
+                        if(!_error){
+                          if(produk == null){
+                            produk = Produk(
                             kodeProdukController.text,
                             namaProdukController.text,
                             gambarProdukController.text,
@@ -163,16 +191,17 @@ class EntryFormState extends State<EntryForm>{
                             int.parse(stokKritisProdukController.text),
                             int.parse(stokProdukController.text)
                           );
-                        } else{
-                          produk.kodeProduk = kodeProdukController.text;
-                          produk.gambarProduk = gambarProdukController.text;
-                          produk.namaProduk = namaProdukController.text;
-                          produk.hargaBeliProduk = int.parse(hargaBeliProdukController.text);
-                          produk.hargaJualProduk = int.parse(hargaJualController.text);
-                          produk.stokKritisProduk = int.parse(stokKritisProdukController.text);
-                          produk.stokProduk = int.parse(stokProdukController.text);
+                          }else{
+                            produk.kodeProduk = kodeProdukController.text;
+                            produk.gambarProduk = gambarProdukController.text;
+                            produk.namaProduk = namaProdukController.text;
+                            produk.hargaBeliProduk = int.parse(hargaBeliProdukController.text);
+                            produk.hargaJualProduk = int.parse(hargaJualController.text);
+                            produk.stokKritisProduk = int.parse(stokKritisProdukController.text);
+                            produk.stokProduk = int.parse(stokProdukController.text);
+                          }
+                          Navigator.pop(context, produk);
                         }
-                        Navigator.pop(context, produk);
                       },
                     ),
                   ),
