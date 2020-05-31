@@ -41,4 +41,14 @@ class CRUD{
     }
     return produkList;
   }
+
+  Future<List<Produk>> getProdukKritisList() async {
+    Database db = await dbHelper.initDb();
+    List<Map<String, dynamic>> mapList = await db.query('produk', where: 'stok_produk <= stok_kritis_produk');
+    List<Produk> produkKritisList = List<Produk>();
+    for(int i=0; i<mapList.length; i++){
+      produkKritisList.add(Produk.fromMap(mapList[i]));
+    }
+    return produkKritisList;
+  }
 }
