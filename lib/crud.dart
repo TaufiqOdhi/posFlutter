@@ -31,9 +31,14 @@ class CRUD{
     return count;
   }
 
-  Future<List<Produk>> getProdukList() async {
+  Future<List<Produk>> getProdukList(String filter) async {
     Database db = await dbHelper.initDb();
-    List<Map<String, dynamic>> mapList = await db.query('produk', orderBy: 'nama_produk');
+    List<Map<String, dynamic>> mapList;
+    if(filter.isEmpty){
+      mapList = await db.query('produk', orderBy: 'nama_produk');
+    }else{
+      mapList = await db.query('produk', orderBy: 'nama_produk', where: "nama_produk LIKE '%$filter%'");
+    }
     int count = mapList.length;
     List<Produk> produkList = List<Produk>();
     for(int i=0; i<count; i++){

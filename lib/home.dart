@@ -12,22 +12,22 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   CRUD dbHelper = CRUD();
   Future<List<Produk>> future;
-
+  TextEditingController searchController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    updateListView();
+    updateListView('');
   }
 
-  void updateListView() {
+  void updateListView(String filter) {
     setState(() {
-      future = dbHelper.getProdukList();
+      future = dbHelper.getProdukList(filter);
     });
   }
 
   Future<Produk> navigateToEntryForm(
       BuildContext context, Produk produk) async {
-        var result = await Navigator.push(context,
+    var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
       return EntryForm(produk);
     }));
@@ -40,16 +40,30 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Daftar Produk'),
       ),
-      body: FutureBuilder<List<Produk>>(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-                children: snapshot.data.map((todo) => cardo(todo)).toList());
-          } else {
-            return SizedBox();
-          }
-        },
+      body: ListView(
+        children: <Widget>[
+          Padding(padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 5.0),
+            child:  TextField(
+            decoration: InputDecoration(labelText: "Search something"),
+            controller: searchController,
+            onChanged: (value) {
+              updateListView(value);
+            },
+            ),
+          ),
+          FutureBuilder<List<Produk>>(
+            future: future,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                    children:
+                        snapshot.data.map((todo) => cardo(todo)).toList());
+              } else {
+                return SizedBox();
+              }
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -59,7 +73,7 @@ class _HomeState extends State<Home> {
           if (produk != null) {
             int result = await dbHelper.insert(produk);
             if (result > 0) {
-              updateListView();
+              updateListView('');
             }
           }
         },
@@ -72,12 +86,12 @@ class _HomeState extends State<Home> {
       color: Colors.white,
       elevation: 2.0,
       child: ListTile(
-        onTap: () async{
+        onTap: () async {
           var contact2 = await navigateToEntryForm(context, produk);
-          if (contact2 != null){
+          if (contact2 != null) {
             int result = await dbHelper.update(contact2);
-            if (result > 0){
-              updateListView();
+            if (result > 0) {
+              updateListView('');
             }
           }
         },
@@ -86,36 +100,38 @@ class _HomeState extends State<Home> {
           child: Icon(Icons.people),
         ),
         title: Text(produk.namaProduk),
-        subtitle: Text('Harga: Rp. '+produk.hargaJualProduk.toString()+
-          '\nStok: '+produk.stokProduk.toString()
-        ),
+        subtitle: Text('Harga: Rp. ' +
+            produk.hargaJualProduk.toString() +
+            '\nStok: ' +
+            produk.stokProduk.toString()),
         trailing: GestureDetector(
           child: Icon(Icons.delete),
           onTap: () async {
             showDialog(
-              context: context,
-              builder: (context) => new AlertDialog(
-                title: new Text('Apakah anda yakin ?'),
-                content: new Text('Menghapus produk'),
-                actions: <Widget>[
-                  new GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Text(
-                      "Tidak",
-                      style: TextStyle(color: Theme.of(context).primaryColorDark),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  new GestureDetector(
-                    onTap: () => deleteProduk(produk),
-                    child: Text(
-                      "Ya",
-                      style: TextStyle(color: Theme.of(context).primaryColorDark),
-                    ),
-                  )
-                ],
-              )
-            );
+                context: context,
+                builder: (context) => new AlertDialog(
+                      title: new Text('Apakah anda yakin ?'),
+                      content: new Text('Menghapus produk'),
+                      actions: <Widget>[
+                        new GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Text(
+                            "Tidak",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColorDark),
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        new GestureDetector(
+                          onTap: () => deleteProduk(produk),
+                          child: Text(
+                            "Ya",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColorDark),
+                          ),
+                        )
+                      ],
+                    ));
           },
         ),
       ),
@@ -125,7 +141,7 @@ class _HomeState extends State<Home> {
   void deleteProduk(Produk produk) async {
     int result = await dbHelper.delete(produk);
     if (result > 0) {
-      updateListView();
+      updateListView('');
     }
     Navigator.of(context).pop();
   }
