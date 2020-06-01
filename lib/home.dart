@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   CRUD dbHelper = CRUD();
   Future<List<Produk>> future;
   TextEditingController searchController = TextEditingController();
-  
+
   @override
   void initState() {
     super.initState();
@@ -44,13 +44,14 @@ class _HomeState extends State<Home> {
       ),
       body: ListView(
         children: <Widget>[
-          Padding(padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 5.0),
-            child:  TextField(
-            decoration: InputDecoration(labelText: "Search something"),
-            controller: searchController,
-            onChanged: (value) {
-              updateListView(value);
-            },
+          Padding(
+            padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 5.0),
+            child: TextField(
+              decoration: InputDecoration(labelText: "Search something"),
+              controller: searchController,
+              onChanged: (value) {
+                updateListView(value);
+              },
             ),
           ),
           FutureBuilder<List<Produk>>(
@@ -71,6 +72,7 @@ class _HomeState extends State<Home> {
         child: Icon(Icons.add),
         tooltip: 'Tambah Data',
         onPressed: () async {
+          FocusScope.of(context).unfocus();
           var produk = await navigateToEntryForm(context, null);
           if (produk != null) {
             int result = await dbHelper.insert(produk);
@@ -90,6 +92,7 @@ class _HomeState extends State<Home> {
       elevation: 2.0,
       child: ListTile(
         onTap: () async {
+          FocusScope.of(context).unfocus();
           var contact2 = await navigateToEntryForm(context, produk);
           if (contact2 != null) {
             int result = await dbHelper.update(contact2);
@@ -99,8 +102,11 @@ class _HomeState extends State<Home> {
           }
         },
         leading: CircleAvatar(
-          backgroundColor: produk.gambarProduk.isEmpty ? Colors.blue : Colors.transparent,
-          child: produk.gambarProduk.isEmpty ? Icon(Icons.image) : Image.file(image),
+          backgroundColor:
+              produk.gambarProduk.isEmpty ? Colors.blue : Colors.transparent,
+          child: produk.gambarProduk.isEmpty
+              ? Icon(Icons.image)
+              : Image.file(image),
         ),
         title: Text(produk.namaProduk),
         subtitle: Text('Harga: Rp. ' +
@@ -110,6 +116,7 @@ class _HomeState extends State<Home> {
         trailing: GestureDetector(
           child: Icon(Icons.delete),
           onTap: () async {
+            FocusScope.of(context).unfocus();
             showDialog(
                 context: context,
                 builder: (context) => new AlertDialog(
