@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pos/crud.dart';
 import 'package:pos/produk.dart';
@@ -44,13 +45,14 @@ class _HalamanStokKritisState extends State<HalamanStokKritis>{
   }
 
   Card cardo(Produk produk) {
+    File image = File(produk.gambarProduk);
     return Card(
       color: Colors.white,
       elevation: 2.0,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.blue,
-          child: Icon(Icons.people),
+          backgroundColor: produk.gambarProduk.isEmpty ? Colors.blue : Colors.transparent,
+          child: produk.gambarProduk.isEmpty ? Icon(Icons.image) : Image.file(image),
         ),
         title: Text(produk.namaProduk),
         subtitle: Text('Stok Sisa: '+produk.stokProduk.toString()),

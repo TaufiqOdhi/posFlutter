@@ -1,6 +1,8 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:pos/produk.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class EntryForm extends StatefulWidget {
   final Produk produk;
@@ -22,18 +24,29 @@ class EntryFormState extends State<EntryForm> {
   bool _errorStok = false;
   bool _errorStokKritis = false;
   EntryFormState(this.produk);
+  File image;
+  String imageDir = '';
 
   TextEditingController kodeProdukController = TextEditingController();
   TextEditingController namaProdukController = TextEditingController();
-  TextEditingController gambarProdukController = TextEditingController();
   TextEditingController hargaBeliProdukController = TextEditingController();
   TextEditingController hargaJualController = TextEditingController();
   TextEditingController stokKritisProdukController = TextEditingController();
   TextEditingController stokProdukController = TextEditingController();
 
   Future _barcScan() async {
-      var result = await BarcodeScanner.scan();
-      kodeProdukController.text = result.rawContent;
+    var result = await BarcodeScanner.scan();
+    kodeProdukController.text = result.rawContent;
+  }
+
+  imagePick(ImageSource sumber) async {
+    final img = await ImagePicker().getImage(source: sumber);
+    if (img != null) {
+      image = File(img.path);
+      imageDir = img.path;
+      print(imageDir);
+      setState(() {});
+    }
   }
 
   @override
@@ -41,7 +54,8 @@ class EntryFormState extends State<EntryForm> {
     if (produk != null) {
       kodeProdukController.text = produk.kodeProduk;
       namaProdukController.text = produk.namaProduk;
-      gambarProdukController.text = produk.gambarProduk;
+      imageDir = produk.gambarProduk;
+      image = File(imageDir);
       hargaBeliProdukController.text = produk.hargaBeliProduk.toString();
       hargaJualController.text = produk.hargaJualProduk.toString();
       stokKritisProdukController.text = produk.stokKritisProduk.toString();
@@ -110,16 +124,14 @@ class EntryFormState extends State<EntryForm> {
           Padding(
             //gambar produk
             padding: EdgeInsets.only(top: 20.0),
-            child: TextField(
-              controller: gambarProdukController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'Gambar Produk',
-                errorText: _errorGambar ? 'Tidak boleh kosong !' : null,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-              ),
+            child: Container(
+              child: imageDir.isEmpty
+                  ? Center(
+                      child: Text('No Image Showing'),
+                    )
+                  : Image.file(image),
+              height: 200,
+              width: 200,
             ),
           ),
           Row(
@@ -132,7 +144,43 @@ class EntryFormState extends State<EntryForm> {
                       'Pilih Gambar',
                       textScaleFactor: 1.0,
                     ),
-                    onPressed: () {}),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => new AlertDialog(
+                                title: new Text(
+                                  'Pilih',
+                                ),
+                                actions: <Widget>[
+                                  new GestureDetector(
+                                    onTap: () {
+                                      imagePick(ImageSource.camera);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      "Camera",
+                                      textScaleFactor: 1.25,
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .primaryColorDark),
+                                    ),
+                                  ),
+                                  new GestureDetector(
+                                    onTap: () {
+                                      imagePick(ImageSource.gallery);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      "Gallery",
+                                      textScaleFactor: 1.25,
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .primaryColorDark),
+                                    ),
+                                  ),
+                                ],
+                              ));
+                    }),
               ),
             ],
           ),
@@ -212,6 +260,22 @@ class EntryFormState extends State<EntryForm> {
                     color: Theme.of(context).primaryColorDark,
                     textColor: Theme.of(context).primaryColorLight,
                     child: Text(
+                      'Cancel',
+                      textScaleFactor: 1.5,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                Container(
+                  width: 5.0,
+                ),
+                Expanded(
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    child: Text(
                       'Save',
                       textScaleFactor: 1.5,
                     ),
@@ -223,9 +287,6 @@ class EntryFormState extends State<EntryForm> {
                         namaProdukController.text.isEmpty
                             ? _errorNama = true
                             : _errorNama = false;
-                        gambarProdukController.text.isEmpty
-                            ? _errorGambar = true
-                            : _errorGambar = false;
                         int.tryParse(hargaBeliProdukController.text) == null
                             ? _errorHargaBeli = true
                             : _errorHargaBeli = false;
@@ -260,14 +321,14 @@ class EntryFormState extends State<EntryForm> {
                           produk = Produk(
                               kodeProdukController.text,
                               namaProdukController.text,
-                              gambarProdukController.text,
+                              imageDir,
                               int.parse(hargaBeliProdukController.text),
                               int.parse(hargaJualController.text),
                               int.parse(stokKritisProdukController.text),
                               int.parse(stokProdukController.text));
                         } else {
                           produk.kodeProduk = kodeProdukController.text;
-                          produk.gambarProduk = gambarProdukController.text;
+                          produk.gambarProduk = imageDir;
                           produk.namaProduk = namaProdukController.text;
                           produk.hargaBeliProduk =
                               int.parse(hargaBeliProdukController.text);
@@ -294,6 +355,7 @@ class EntryFormState extends State<EntryForm> {
                                       onTap: () => Navigator.of(context).pop(),
                                       child: Text(
                                         "Kembali",
+                                        textScaleFactor: 1.25,
                                         style: TextStyle(
                                             color: Theme.of(context)
                                                 .primaryColorDark),
@@ -302,22 +364,6 @@ class EntryFormState extends State<EntryForm> {
                                   ],
                                 ));
                       }
-                    },
-                  ),
-                ),
-                Container(
-                  width: 5.0,
-                ),
-                Expanded(
-                  child: RaisedButton(
-                    color: Theme.of(context).primaryColorDark,
-                    textColor: Theme.of(context).primaryColorLight,
-                    child: Text(
-                      'Cancel',
-                      textScaleFactor: 1.5,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
                     },
                   ),
                 ),

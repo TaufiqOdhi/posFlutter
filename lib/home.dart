@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pos/produk.dart';
 import 'package:pos/crud.dart';
@@ -13,6 +14,7 @@ class _HomeState extends State<Home> {
   CRUD dbHelper = CRUD();
   Future<List<Produk>> future;
   TextEditingController searchController = TextEditingController();
+  
   @override
   void initState() {
     super.initState();
@@ -82,6 +84,7 @@ class _HomeState extends State<Home> {
   }
 
   Card cardo(Produk produk) {
+    File image = File(produk.gambarProduk);
     return Card(
       color: Colors.white,
       elevation: 2.0,
@@ -96,8 +99,8 @@ class _HomeState extends State<Home> {
           }
         },
         leading: CircleAvatar(
-          backgroundColor: Colors.blue,
-          child: Icon(Icons.people),
+          backgroundColor: produk.gambarProduk.isEmpty ? Colors.blue : Colors.transparent,
+          child: produk.gambarProduk.isEmpty ? Icon(Icons.image) : Image.file(image),
         ),
         title: Text(produk.namaProduk),
         subtitle: Text('Harga: Rp. ' +
@@ -117,6 +120,7 @@ class _HomeState extends State<Home> {
                           onTap: () => Navigator.of(context).pop(),
                           child: Text(
                             "Tidak",
+                            textScaleFactor: 1.25,
                             style: TextStyle(
                                 color: Theme.of(context).primaryColorDark),
                           ),
@@ -126,6 +130,7 @@ class _HomeState extends State<Home> {
                           onTap: () => deleteProduk(produk),
                           child: Text(
                             "Ya",
+                            textScaleFactor: 1.25,
                             style: TextStyle(
                                 color: Theme.of(context).primaryColorDark),
                           ),
