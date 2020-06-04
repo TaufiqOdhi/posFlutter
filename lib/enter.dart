@@ -44,14 +44,20 @@ class EntryFormState extends State<EntryForm> {
     final img = await ImagePicker().getImage(source: sumber);
 
     if (img != null) {
-      if(Produk == null){
+      if(image != null){
+        image.delete();
+      }
+      if(imageUpdate != null){
+        imageUpdate.delete();
+      }
+      if(produk == null){
         image = File(img.path);
       } else{
         imageUpdate = File(img.path);
       }
       if (sumber == ImageSource.gallery) {
         Directory saveDir = await getExternalStorageDirectory();
-        if(Produk != null){
+        if(produk == null){
           final File img2 = await image.copy(saveDir.path + '/posFlutter-' + DateTime.now().toString() + '.jpg');
           image = img2;
         } else{
