@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:pos/access_database.dart';
 import 'package:pos/produk.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class CRUD{
   static const todoTable = 'produk';
@@ -12,22 +14,27 @@ class CRUD{
   static const stokProduk = 'stok_produk';
   static const stokKritisProduk = 'stok_kritis_produk';
   AccesDatabase dbHelper = new AccesDatabase();
+  static FirebaseDatabase fireDatabase = new FirebaseDatabase();
 
   Future<int> insert(Produk todo) async {
     Database db = await dbHelper.initDb();
     int count = await db.insert('produk', todo.toMap());
+    await fireDatabase.reference().child('produk').child(todo.kodeProduk).set(todo.toJson());
     return count;
   }
 
   Future<int> update(Produk todo) async {
     Database db = await dbHelper.initDb();
     int count = await db.update('produk', todo.toMap(), where: 'kode_produk=?', whereArgs: [todo.kodeProduk]);
+    await fireDatabase.reference().child('produk').child(todo.kodeProduk).set(todo.toJson());
     return count;
   }
 
   Future<int> delete(Produk todo) async {
     Database db = await dbHelper.initDb();
     int count = await db.delete('produk', where: 'kode_produk=?', whereArgs: [todo.kodeProduk]);
+    await fireDatabase.reference().child('produk').child(todo.kodeProduk).remove();
+    File(todo.gambarProduk).delete();
     return count;
   }
 
@@ -36,6 +43,8 @@ class CRUD{
     List<Map<String, dynamic>> mapList;
     if(filter.isEmpty){
       mapList = await db.query('produk', orderBy: 'nama_produk');
+      DataSnapshot snap = await fireDatabase.reference().child('produk').orderByChild("nama_produk").once();
+      print(snap.value);      
     }else{
       mapList = await db.query('produk', orderBy: 'nama_produk', where: "nama_produk LIKE '%$filter%'");
     }

@@ -44,10 +44,10 @@ class EntryFormState extends State<EntryForm> {
     final img = await ImagePicker().getImage(source: sumber);
 
     if (img != null) {
-      if(image != null){
+      if(image != null){//untuk menghapus file lama ketika file gambar diganti
         image.delete();
       }
-      if(imageUpdate != null){
+      if(imageUpdate != null){//untuk menghapus file lama ketika file gambar diganti
         imageUpdate.delete();
       }
       if(produk == null){
