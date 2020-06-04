@@ -6,7 +6,7 @@ class AccesDatabase{
   Future<Database> initDb() async{
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'produk.db';
-    var todoDatabase = openDatabase(path, version: 1, onCreate: _createDb);
+    var todoDatabase = openDatabase(path, version: 2, onCreate: _createDb);
     return todoDatabase;
   }
 
@@ -16,7 +16,7 @@ class AccesDatabase{
       `nama_produk` varchar ( 25 ) NOT NULL, 
       `harga_jual_produk` int ( 9 ) NOT NULL,
       `harga_beli_produk` int ( 9 ) NOT NULL,
-      `gambar_produk` varchar ( 50 ) NOT NULL,
+      `gambar_produk` varchar ( 150 ) NOT NULL,
       `stok_produk` int ( 3 ) NOT NULL,
       `stok_kritis_produk` int ( 3 ) NOT NULL,
       PRIMARY KEY(`kode_produk`) )

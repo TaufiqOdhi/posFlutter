@@ -1,5 +1,6 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pos/produk.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -25,7 +26,7 @@ class EntryFormState extends State<EntryForm> {
   bool _errorStokKritis = false;
   EntryFormState(this.produk);
   File image;
-  String imageDir = '';
+  File imageUpdate;
 
   TextEditingController kodeProdukController = TextEditingController();
   TextEditingController namaProdukController = TextEditingController();
@@ -41,10 +42,23 @@ class EntryFormState extends State<EntryForm> {
 
   imagePick(ImageSource sumber) async {
     final img = await ImagePicker().getImage(source: sumber);
+
     if (img != null) {
-      image = File(img.path);
-      imageDir = img.path;
-      print(imageDir);
+      if(Produk == null){
+        image = File(img.path);
+      } else{
+        imageUpdate = File(img.path);
+      }
+      if (sumber == ImageSource.gallery) {
+        Directory saveDir = await getExternalStorageDirectory();
+        if(Produk != null){
+          final File img2 = await image.copy(saveDir.path + '/posFlutter-' + DateTime.now().toString() + '.jpg');
+          image = img2;
+        } else{
+          final File img2 = await imageUpdate.copy(saveDir.path + '/posFlutter-' + DateTime.now().toString() + '.jpg');
+          imageUpdate = img2;
+        }
+      }
       setState(() {});
     }
   }
@@ -54,8 +68,7 @@ class EntryFormState extends State<EntryForm> {
     if (produk != null) {
       kodeProdukController.text = produk.kodeProduk;
       namaProdukController.text = produk.namaProduk;
-      imageDir = produk.gambarProduk;
-      image = File(imageDir);
+      image = File(produk.gambarProduk);
       hargaBeliProdukController.text = produk.hargaBeliProduk.toString();
       hargaJualController.text = produk.hargaJualProduk.toString();
       stokKritisProdukController.text = produk.stokKritisProduk.toString();
@@ -125,11 +138,13 @@ class EntryFormState extends State<EntryForm> {
             //gambar produk
             padding: EdgeInsets.only(top: 20.0),
             child: Container(
-              child: imageDir.isEmpty
+              child: image == null
                   ? Center(
                       child: Text('No Image Showing'),
                     )
-                  : Image.file(image),
+                  : imageUpdate == null
+                    ? Image.file(image)
+                    : Image.file(imageUpdate),
               height: 200,
               width: 200,
             ),
@@ -321,14 +336,18 @@ class EntryFormState extends State<EntryForm> {
                           produk = Produk(
                               kodeProdukController.text,
                               namaProdukController.text,
-                              imageDir,
+                              image.path,
                               int.parse(hargaBeliProdukController.text),
                               int.parse(hargaJualController.text),
                               int.parse(stokKritisProdukController.text),
                               int.parse(stokProdukController.text));
                         } else {
                           produk.kodeProduk = kodeProdukController.text;
-                          produk.gambarProduk = imageDir;
+                          if(imageUpdate == null){
+                            produk.gambarProduk = image.path;
+                          }else{
+                            produk.gambarProduk = imageUpdate.path;
+                          }
                           produk.namaProduk = namaProdukController.text;
                           produk.hargaBeliProduk =
                               int.parse(hargaBeliProdukController.text);

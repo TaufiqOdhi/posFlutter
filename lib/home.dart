@@ -93,9 +93,9 @@ class _HomeState extends State<Home> {
       child: ListTile(
         onTap: () async {
           FocusScope.of(context).unfocus();
-          var contact2 = await navigateToEntryForm(context, produk);
-          if (contact2 != null) {
-            int result = await dbHelper.update(contact2);
+          var produk2 = await navigateToEntryForm(context, produk);
+          if (produk2 != null) {
+            int result = await dbHelper.update(produk2);
             if (result > 0) {
               updateListView('');
             }
