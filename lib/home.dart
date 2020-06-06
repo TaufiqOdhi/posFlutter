@@ -86,7 +86,10 @@ class _HomeState extends State<Home> {
   }
 
   Card cardo(Produk produk) {
-    File image = File(produk.gambarProduk);
+    File image;
+    if(produk.gambarProduk != 'tidak ada'){
+      image = File(produk.gambarProduk);
+    }
     return Card(
       color: Colors.white,
       elevation: 2.0,
@@ -104,8 +107,8 @@ class _HomeState extends State<Home> {
         },
         leading: CircleAvatar(
           backgroundColor:
-              produk.gambarProduk.isEmpty ? Colors.blue : Colors.transparent,
-          child: produk.gambarProduk.isEmpty
+              produk.gambarProduk == 'tidak ada' ? Colors.blue : Colors.transparent,
+          child: produk.gambarProduk == 'tidak ada'
               ? Icon(Icons.image)
               : Image.file(image),
         ),

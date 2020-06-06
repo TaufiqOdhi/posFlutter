@@ -74,7 +74,9 @@ class EntryFormState extends State<EntryForm> {
     if (produk != null) {
       kodeProdukController.text = produk.kodeProduk;
       namaProdukController.text = produk.namaProduk;
-      image = File(produk.gambarProduk);
+      if(produk.gambarProduk != 'tidak ada'){
+        image = File(produk.gambarProduk);
+      }
       hargaBeliProdukController.text = produk.hargaBeliProduk.toString();
       hargaJualController.text = produk.hargaJualProduk.toString();
       stokKritisProdukController.text = produk.stokKritisProduk.toString();
@@ -342,7 +344,7 @@ class EntryFormState extends State<EntryForm> {
                           produk = Produk(
                               kodeProdukController.text,
                               namaProdukController.text,
-                              image.path,
+                              image == null ? 'tidak ada':image.path,
                               int.parse(hargaBeliProdukController.text),
                               int.parse(hargaJualController.text),
                               int.parse(stokKritisProdukController.text),
@@ -350,7 +352,7 @@ class EntryFormState extends State<EntryForm> {
                         } else {
                           produk.kodeProduk = kodeProdukController.text;
                           if(imageUpdate == null){
-                            produk.gambarProduk = image.path;
+                            image == null ? produk.gambarProduk = 'tidak ada' : produk.gambarProduk = image.path;
                           }else{
                             produk.gambarProduk = imageUpdate.path;
                           }

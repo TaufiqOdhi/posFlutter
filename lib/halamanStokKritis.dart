@@ -45,14 +45,17 @@ class _HalamanStokKritisState extends State<HalamanStokKritis>{
   }
 
   Card cardo(Produk produk) {
-    File image = File(produk.gambarProduk);
+    File image;
+    if(produk.gambarProduk != 'tidak ada'){
+      image = File(produk.gambarProduk);
+    }
     return Card(
       color: Colors.white,
       elevation: 2.0,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: produk.gambarProduk.isEmpty ? Colors.blue : Colors.transparent,
-          child: produk.gambarProduk.isEmpty ? Icon(Icons.image) : Image.file(image),
+          backgroundColor: produk.gambarProduk == 'tidak ada' ? Colors.blue : Colors.transparent,
+          child: produk.gambarProduk == 'tidak ada' ? Icon(Icons.image) : Image.file(image),
         ),
         title: Text(produk.namaProduk),
         subtitle: Text('Stok Sisa: '+produk.stokProduk.toString()),
