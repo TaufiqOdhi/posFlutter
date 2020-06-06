@@ -92,10 +92,11 @@ class _HomeState extends State<Home> {
       elevation: 2.0,
       child: ListTile(
         onTap: () async {
+          String oldKodeProduk = produk.kodeProduk;
           FocusScope.of(context).unfocus();
           var produk2 = await navigateToEntryForm(context, produk);
           if (produk2 != null) {
-            int result = await dbHelper.update(produk2);
+            int result = await dbHelper.update(produk2, oldKodeProduk);
             if (result > 0) {
               updateListView('');
             }
