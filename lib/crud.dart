@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:pos/access_database.dart';
 import 'package:pos/produk.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -23,6 +24,11 @@ class CRUD {
         .child('produk')
         .child(todo.kodeProduk)
         .set(todo.toJson());
+    File fileImage = File(todo.gambarProduk);
+    StorageReference storageReference = FirebaseStorage.instance.ref().child('imageProduk');
+    StorageUploadTask uploadTask = storageReference.
+      child(todo.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).putFile(fileImage);
+    await uploadTask.onComplete;
     return count;
   }
 
@@ -48,6 +54,11 @@ class CRUD {
         .child(oldKodeProduk)
         .remove();
     }
+    File fileImage = File(todo.gambarProduk);
+    StorageReference storageReference = FirebaseStorage.instance.ref().child('imageProduk');
+    StorageUploadTask uploadTask = storageReference.
+      child(todo.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).putFile(fileImage);
+    await uploadTask.onComplete;
     return count;
   }
 
