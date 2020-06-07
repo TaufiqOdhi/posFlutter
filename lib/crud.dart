@@ -100,7 +100,7 @@ class CRUD {
     Map<dynamic, dynamic> values = snap.value;
     produkList.clear();
     if (values != null) {
-      values.forEach((key, value) {
+      values.forEach((key, value) async {
         Produk produk1 = Produk(
             key,
             value['nama_produk'],
@@ -110,6 +110,13 @@ class CRUD {
             int.parse(value['stok_kritis_produk'].toString()),
             int.parse(value['stok_produk'].toString()));
         produkList.add(produk1);
+
+        await File(produk1.gambarProduk).exists().then((value) async {
+          if(value == false){
+            print('masuk if di getProdukList');
+            await downloadImage(produk1);
+          }
+        });
       });
     }
     return produkList;
@@ -134,10 +141,13 @@ class CRUD {
 
   Future<File> downloadImage(Produk produk) async{
     File file = File(produk.gambarProduk);
+    //file.writeAsString('');
     StorageReference storageReference = FirebaseStorage.instance.ref().child('imageProduk');
+    print('sebelum download');
     StorageFileDownloadTask downloadTask = storageReference
       .child(produk.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).writeToFile(file);       
     await downloadTask.future;
+    print('selesai download');
     return file;
   }
 }

@@ -89,13 +89,6 @@ class _HomeState extends State<Home> {
     File image;
     if(produk.gambarProduk != 'tidak ada'){
       image = File(produk.gambarProduk);
-      image.exists().then((value) async {
-        if(value == false){
-          await dbHelper.downloadImage(produk).then((value){
-            image = value;
-          });
-        }
-      });
     }
     return Card(
       color: Colors.white,
