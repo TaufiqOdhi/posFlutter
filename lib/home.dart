@@ -87,8 +87,17 @@ class _HomeState extends State<Home> {
 
   Card cardo(Produk produk) {
     File image;
+    String imageUrl = '';
+    bool localImageExisted = true;
     if(produk.gambarProduk != 'tidak ada'){
       image = File(produk.gambarProduk);
+      image.exists().then((value) async {//mengecek jika file tidak ada tapi masih belum bisa waiting
+        if(value == false){
+          print('masuk if false');
+          localImageExisted = false;
+          imageUrl = await dbHelper.downloadImage(produk);
+        }
+      });
     }
     return Card(
       color: Colors.white,
@@ -110,7 +119,7 @@ class _HomeState extends State<Home> {
               produk.gambarProduk == 'tidak ada' ? Colors.blue : Colors.transparent,
           child: produk.gambarProduk == 'tidak ada'
               ? Icon(Icons.image)
-              : Image.file(image),
+              : localImageExisted ? Image.file(image) : Image.network(imageUrl),
         ),
         title: Text(produk.namaProduk),
         subtitle: Text('Harga: Rp. ' +

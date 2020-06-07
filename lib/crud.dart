@@ -110,13 +110,6 @@ class CRUD {
             int.parse(value['stok_kritis_produk'].toString()),
             int.parse(value['stok_produk'].toString()));
         produkList.add(produk1);
-
-        await File(produk1.gambarProduk).exists().then((value) async {
-          if(value == false){
-            print('masuk if di getProdukList');
-            await downloadImage(produk1);
-          }
-        });
       });
     }
     return produkList;
@@ -139,15 +132,17 @@ class CRUD {
     return produkKritisList;
   }
 
-  Future<File> downloadImage(Produk produk) async{
+  Future<String> downloadImage(Produk produk) async{
     File file = File(produk.gambarProduk);
-    //file.writeAsString('');
     StorageReference storageReference = FirebaseStorage.instance.ref().child('imageProduk');
     print('sebelum download');
+    var url = await storageReference
+      .child(produk.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).getDownloadURL();
+    String imageUrl = url.toString();
     StorageFileDownloadTask downloadTask = storageReference
-      .child(produk.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).writeToFile(file);       
+      .child(produk.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).writeToFile(file);      
     await downloadTask.future;
     print('selesai download');
-    return file;
+    return imageUrl;
   }
 }
