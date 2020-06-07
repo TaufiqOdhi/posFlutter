@@ -131,4 +131,13 @@ class CRUD {
     // });
     return produkKritisList;
   }
+
+  Future<File> downloadImage(Produk produk) async{
+    File file = File(produk.gambarProduk);
+    StorageReference storageReference = FirebaseStorage.instance.ref().child('imageProduk');
+    StorageFileDownloadTask downloadTask = storageReference
+      .child(produk.gambarProduk.split('/storage/emulated/0/Android/data/com.example.pos/files/Pictures/')[1]).writeToFile(file);       
+    await downloadTask.future;
+    return file;
+  }
 }

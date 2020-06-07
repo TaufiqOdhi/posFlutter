@@ -58,10 +58,10 @@ class EntryFormState extends State<EntryForm> {
       if (sumber == ImageSource.gallery) {
         Directory saveDir = await getExternalStorageDirectory();
         if(produk == null){
-          final File img2 = await image.copy(saveDir.path + '/posFlutter-' + DateTime.now().toString() + '.jpg');
+          final File img2 = await image.copy(saveDir.path + '/Pictures/posFlutter-' + DateTime.now().toString() + '.jpg');
           image = img2;
         } else{
-          final File img2 = await imageUpdate.copy(saveDir.path + '/posFlutter-' + DateTime.now().toString() + '.jpg');
+          final File img2 = await imageUpdate.copy(saveDir.path + '/Pictures/posFlutter-' + DateTime.now().toString() + '.jpg');
           imageUpdate = img2;
         }
       }
